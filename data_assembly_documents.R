@@ -52,4 +52,11 @@ print(file_contents)
 
 file_contents$Document.ID <- substr(file_contents$file_name, 1, 18)
 full_dataframe <- merge(initial_dataframe, file_contents, by = "Document.ID")
-#removed files that didn't have attachments--figure out how to add them back in!
+
+initial_ids <- full_dataframe$Document.ID
+subset_dataframe_base <- initial_dataframe[!initial_dataframe$Document.ID %in% initial_ids, ]
+
+subset_dataframe_base$file_name <- NA_character_
+subset_dataframe_base$text <- NA_character_
+
+final_dataframe_1 <- rbind(full_dataframe, subset_dataframe_base)
