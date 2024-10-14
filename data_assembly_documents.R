@@ -60,3 +60,4 @@ subset_dataframe_base$file_name <- NA_character_
 subset_dataframe_base$text <- NA_character_
 
 final_dataframe_1 <- rbind(full_dataframe, subset_dataframe_base)
+saveRDS(final_dataframe_1, "final_dataframe_1.rds")
