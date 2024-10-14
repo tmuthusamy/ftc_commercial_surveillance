@@ -60,4 +60,8 @@ subset_dataframe_base$file_name <- NA_character_
 subset_dataframe_base$text <- NA_character_
 
 final_dataframe_1 <- rbind(full_dataframe, subset_dataframe_base)
+final_dataframe_1$doc_number <- substr(final_dataframe_1$Document.ID, 15, 18)
+final_dataframe_1 <- final_dataframe_1 %>%
+  arrange(doc_number)
 saveRDS(final_dataframe_1, "final_dataframe_1.rds")
+write.csv(final_dataframe_1, "final_dataframe.csv", row.names = FALSE)
