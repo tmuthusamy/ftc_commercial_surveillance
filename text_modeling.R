@@ -67,8 +67,37 @@ mean(df_with_sentiment$average_sentiment, na.rm = TRUE)
 
 
 #Topic Modeling
+library(tm)
+library(topicmodels)
+library(textmineR)
 
+corpus <- Corpus(VectorSource(final_df$Comment))
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, removeNumbers)
+corpus <- tm_map(corpus, removeWords, stopwords("en"))
+corpus <- tm_map(corpus, stripWhitespace)
 
+dtm <- DocumentTermMatrix(corpus)
+row_sums <- rowSums(as.matrix(dtm))
+non_empty_docs <- which(row_sums > 0)
+dtm_non_empty <- dtm[non_empty_docs, ]
 
+set.seed(123)
+k <- 10
+lda_model <- LDA(dtm_non_empty, k = k, control = list(seed = 123))
 
+terms(lda_model, 5)
 
+custom_stopwords <- c("data", "ftc")
+corpus <- tm_map(corpus, removeWords, custom_stopwords)
+dtm <- DocumentTermMatrix(corpus)
+dtm <- removeSparseTerms(dtm, 0.90)
+row_sums <- rowSums(as.matrix(dtm))
+non_empty_docs <- which(row_sums > 0)
+dtm_non_empty <- dtm[non_empty_docs, ]
+set.seed(123)
+k <- 10
+lda_model <- LDA(dtm_non_empty, k = k, control = list(seed = 123))
+
+terms(lda_model, 5)

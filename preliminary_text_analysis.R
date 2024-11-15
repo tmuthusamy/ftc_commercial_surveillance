@@ -61,7 +61,7 @@ extracted_sentences_4 <- df1 %>%
 prelim_occupation_df_1 <-
   do.call(rbind, list(extracted_sentences_1, extracted_sentences_2, extracted_sentences_3, extracted_sentences_4)) %>%
   distinct()
-write.csv(prelim_occupation_df, "occupations.csv")
+write.csv(prelim_occupation_df_1, "occupations.csv")
 
 
 #ANALYSIS OF FIVE KEY AREAS
@@ -190,3 +190,4 @@ prelim_occupation_df_2 <- do.call(rbind, list(civil_society, tech_companies, con
 prelim_occupation_df <- rbind(prelim_occupation_df_1, prelim_occupation_df_2) %>%
   distinct()
 write.csv(prelim_occupation_df, "occupations.csv")
+write.csv(df1, "final_dataframe.csv")
