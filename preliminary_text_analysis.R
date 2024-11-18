@@ -191,3 +191,6 @@ prelim_occupation_df <- rbind(prelim_occupation_df_1, prelim_occupation_df_2) %>
   distinct()
 write.csv(prelim_occupation_df, "occupations.csv")
 write.csv(df1, "final_dataframe.csv")
+
+library(openxlsx)
+write.xlsx(df1, file = "final_dataframe.xlsx")
