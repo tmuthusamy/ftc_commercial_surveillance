@@ -32,13 +32,13 @@ specific_word <- "As a"
 extracted_sentences_1 <- df1 %>%
   filter(str_detect(Comment, specific_word)) %>%
   mutate(extracted = str_extract(Comment, paste0("([^.]*\\b", specific_word, "\\b[^.]*\\.)"))) %>%
-  select(extracted)
+  select(Document.ID, extracted)
 
 specific_word <- "I am a"
 extracted_sentences_2 <- df1 %>%
   filter(str_detect(Comment, specific_word)) %>%
   mutate(extracted = str_extract(Comment, paste0("([^.]*\\b", specific_word, "\\b[^.]*\\.)"))) %>%
-  select(extracted)
+  select(Document.ID, extracted)
 
 specific_word <- "As a"
 extracted_sentences_3 <- df1 %>%
@@ -46,7 +46,7 @@ extracted_sentences_3 <- df1 %>%
   filter(str_detect(Comment, specific_word)) %>%
   mutate(extracted = str_extract(all_text, paste0("([^.]*\\b", specific_word, "\\b[^.]*\\.)"))) %>%
   mutate(extracted = str_squish(str_trim(extracted))) %>%
-  select(extracted) %>%
+  select(Document.ID, extracted) %>%
   distinct()
 
 specific_word <- "I am a"
@@ -55,7 +55,7 @@ extracted_sentences_4 <- df1 %>%
   filter(str_detect(Comment, specific_word)) %>%
   mutate(extracted = str_extract(all_text, paste0("([^.]*\\b", specific_word, "\\b[^.]*\\.)"))) %>%
   mutate(extracted = str_squish(str_trim(extracted))) %>%
-  select(extracted) %>%
+  select(Document.ID, extracted) %>%
   distinct()
 
 prelim_occupation_df_1 <-
@@ -74,12 +74,12 @@ civil_society_1 <- df1 %>%
   filter(str_detect(all_text, regex_pattern)) %>% 
   mutate(extracted = str_extract(all_text, paste0("([^.]*", regex_pattern, "[^.]*\\.)"))) %>%
   mutate(extracted = str_squish(str_trim(extracted))) %>%
-  select(extracted) %>%
+  select(Document.ID, extracted) %>%
   distinct()
 civil_society_2 <- df1 %>%
   filter(str_detect(Comment, regex_pattern)) %>%
   mutate(extracted = str_extract(Comment, paste0("([^.]*\\b", regex_pattern, "\\b[^.]*\\.)"))) %>%
-  select(extracted) %>%
+  select(Document.ID, extracted) %>%
   distinct()
 civil_society <- rbind(civil_society_1, civil_society_2) %>%
   distinct()
@@ -98,12 +98,12 @@ tech_companies_1 <- df1 %>%
   filter(str_detect(all_text, regex_pattern)) %>% 
   mutate(extracted = str_extract(all_text, paste0("([^.]*", regex_pattern, "[^.]*\\.)"))) %>%
   mutate(extracted = str_squish(str_trim(extracted))) %>%
-  select(extracted) %>%
+  select(Document.ID, extracted) %>%
   distinct()
 tech_companies_2 <- df1 %>%
   filter(str_detect(Comment, regex_pattern)) %>%
   mutate(extracted = str_extract(Comment, paste0("([^.]*\\b", regex_pattern, "\\b[^.]*\\.)"))) %>%
-  select(extracted) %>%
+  select(Document.ID, extracted) %>%
   distinct()
 tech_companies <- rbind(tech_companies_1, tech_companies_2) %>%
   distinct()
@@ -121,12 +121,12 @@ consumers_1 <- df1 %>%
   filter(str_detect(all_text, regex_pattern)) %>% 
   mutate(extracted = str_extract(all_text, paste0("([^.]*", regex_pattern, "[^.]*\\.)"))) %>%
   mutate(extracted = str_squish(str_trim(extracted))) %>%
-  select(extracted) %>%
+  select(Document.ID, extracted) %>%
   distinct()
 consumers_2 <- df1 %>%
   filter(str_detect(Comment, regex_pattern)) %>%
   mutate(extracted = str_extract(Comment, paste0("([^.]*\\b", regex_pattern, "\\b[^.]*\\.)"))) %>%
-  select(extracted) %>%
+  select(Document.ID, extracted) %>%
   distinct()
 consumers <- rbind(consumers_1, consumers_2) %>%
   distinct()
@@ -145,12 +145,12 @@ academics_1 <- df1 %>%
   filter(str_detect(all_text, regex_pattern)) %>% 
   mutate(extracted = str_extract(all_text, paste0("([^.]*", regex_pattern, "[^.]*\\.)"))) %>%
   mutate(extracted = str_squish(str_trim(extracted))) %>%
-  select(extracted) %>%
+  select(Document.ID, extracted) %>%
   distinct()
 academics_2 <- df1 %>%
   filter(str_detect(Comment, regex_pattern)) %>%
   mutate(extracted = str_extract(Comment, paste0("([^.]*\\b", regex_pattern, "\\b[^.]*\\.)"))) %>%
-  select(extracted) %>%
+  select(Document.ID, extracted) %>%
   distinct()
 academics <- rbind(academics_1, academics_2) %>%
   distinct()
@@ -168,12 +168,12 @@ government_1 <- df1 %>%
   filter(str_detect(all_text, regex_pattern)) %>% 
   mutate(extracted = str_extract(all_text, paste0("([^.]*", regex_pattern, "[^.]*\\.)"))) %>%
   mutate(extracted = str_squish(str_trim(extracted))) %>%
-  select(extracted) %>%
+  select(Document.ID, extracted) %>%
   distinct()
 government_2 <- df1 %>%
   filter(str_detect(Comment, regex_pattern)) %>%
   mutate(extracted = str_extract(Comment, paste0("([^.]*\\b", regex_pattern, "\\b[^.]*\\.)"))) %>%
-  select(extracted) %>%
+  select(Document.ID, extracted) %>%
   distinct()
 government <- rbind(government_1, government_2) %>%
   distinct()
@@ -188,9 +188,13 @@ prelim_occupation_df_2 <- do.call(rbind, list(civil_society, tech_companies, con
   distinct()
 
 prelim_occupation_df <- rbind(prelim_occupation_df_1, prelim_occupation_df_2) %>%
-  distinct()
-write.csv(prelim_occupation_df, "occupations.csv")
+  distinct() %>%
+  na.omit() %>%
+  arrange(Document.ID)
+write.xlsx(prelim_occupation_df, "occupations.xlsx")
 write.csv(df1, "final_dataframe.csv")
 
+df_truncated <- df1 %>%
+  select(1:8, 29:33)
 library(openxlsx)
-write.xlsx(df1, file = "final_dataframe.xlsx")
+write.xlsx(df_truncated, file = "final_dataframe.xlsx")
